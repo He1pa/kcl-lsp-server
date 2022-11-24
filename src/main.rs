@@ -25,67 +25,67 @@ struct Backend {
 #[tower_lsp::async_trait]
 impl LanguageServer for Backend {
     async fn initialize(&self, _: InitializeParams) -> Result<InitializeResult> {
-        // Ok(InitializeResult {
-        //     server_info: None,
-        //     capabilities: ServerCapabilities {
+        Ok(InitializeResult {
+            server_info: None,
+            capabilities: ServerCapabilities {
 
-        //         text_document_sync: Some(TextDocumentSyncCapability::Kind(
-        //             TextDocumentSyncKind::FULL,
-        //         )),
+                // text_document_sync: Some(TextDocumentSyncCapability::Kind(
+                //     TextDocumentSyncKind::FULL,
+                // )),
                 
 
-        //         completion_provider: Some(CompletionOptions {
-        //             resolve_provider: Some(false),
-        //             trigger_characters: Some(vec![".".to_string()]),
-        //             work_done_progress_options: Default::default(),
-        //             all_commit_characters: None,
-        //         }),
-        //         execute_command_provider: Some(ExecuteCommandOptions {
-        //             commands: vec!["dummy.do_something".to_string()],
-        //             work_done_progress_options: Default::default(),
-        //         }),
+                // completion_provider: Some(CompletionOptions {
+                //     resolve_provider: Some(false),
+                //     trigger_characters: Some(vec![".".to_string()]),
+                //     work_done_progress_options: Default::default(),
+                //     all_commit_characters: None,
+                // }),
+                // execute_command_provider: Some(ExecuteCommandOptions {
+                //     commands: vec!["dummy.do_something".to_string()],
+                //     work_done_progress_options: Default::default(),
+                // }),
 
-        //         workspace: Some(WorkspaceServerCapabilities {
-        //             workspace_folders: Some(WorkspaceFoldersServerCapabilities {
-        //                 supported: Some(true),
-        //                 change_notifications: Some(OneOf::Left(true)),
-        //             }),
-        //             file_operations: None,
-        //         }),
-        //         semantic_tokens_provider: Some(
-        //             SemanticTokensServerCapabilities::SemanticTokensRegistrationOptions(
-        //                 SemanticTokensRegistrationOptions {
-        //                     text_document_registration_options: {
-        //                         TextDocumentRegistrationOptions {
-        //                             document_selector: Some(vec![DocumentFilter {
-        //                                 language: Some("kcl".to_string()),
-        //                                 scheme: Some("file".to_string()),
-        //                                 pattern: None,
-        //                             }]),
-        //                         }
-        //                     },
-        //                     semantic_tokens_options: SemanticTokensOptions {
-        //                         work_done_progress_options: WorkDoneProgressOptions::default(),
-        //                         legend: SemanticTokensLegend {
-        //                             token_types: LEGEND_TYPE.clone().into(),
-        //                             token_modifiers: vec![],
-        //                         },
-        //                         range: Some(true),
-        //                         full: Some(SemanticTokensFullOptions::Bool(true)),
-        //                     },
-        //                     static_registration_options: StaticRegistrationOptions::default(),
-        //                 },
-        //             ),
-        //         ),
-        //         // definition: Some(GotoCapability::default()),
-        //         definition_provider: Some(OneOf::Left(true)),
-        //         references_provider: Some(OneOf::Left(true)),
-        //         rename_provider: Some(OneOf::Left(true)),
+                // workspace: Some(WorkspaceServerCapabilities {
+                //     workspace_folders: Some(WorkspaceFoldersServerCapabilities {
+                //         supported: Some(true),
+                //         change_notifications: Some(OneOf::Left(true)),
+                //     }),
+                //     file_operations: None,
+                // }),
+                // semantic_tokens_provider: Some(
+                //     SemanticTokensServerCapabilities::SemanticTokensRegistrationOptions(
+                //         SemanticTokensRegistrationOptions {
+                //             text_document_registration_options: {
+                //                 TextDocumentRegistrationOptions {
+                //                     document_selector: Some(vec![DocumentFilter {
+                //                         language: Some("kcl".to_string()),
+                //                         scheme: Some("file".to_string()),
+                //                         pattern: None,
+                //                     }]),
+                //                 }
+                //             },
+                //             semantic_tokens_options: SemanticTokensOptions {
+                //                 work_done_progress_options: WorkDoneProgressOptions::default(),
+                //                 legend: SemanticTokensLegend {
+                //                     token_types: LEGEND_TYPE.clone().into(),
+                //                     token_modifiers: vec![],
+                //                 },
+                //                 range: Some(true),
+                //                 full: Some(SemanticTokensFullOptions::Bool(true)),
+                //             },
+                //             static_registration_options: StaticRegistrationOptions::default(),
+                //         },
+                //     ),
+                // ),
+                // definition: Some(GotoCapability::default()),
+                definition_provider: Some(OneOf::Left(true)),
+                // references_provider: Some(OneOf::Left(true)),
+                // rename_provider: Some(OneOf::Left(true)),
 
-        //         ..ServerCapabilities::default()
-        //     },
-        // })
-        Ok(InitializeResult::default())
+                ..ServerCapabilities::default()
+            },
+        })
+        // Ok(InitializeResult::default())
     }
     // async fn semantic_tokens_full(
     //     &self,
@@ -218,30 +218,36 @@ impl LanguageServer for Backend {
     //     Ok(reference_list)
     // }
 
-    // async fn goto_definition(
-    //     &self,
-    //     params: GotoDefinitionParams,
-    // ) -> Result<Option<GotoDefinitionResponse>> {
-    //     let definition = || -> Option<GotoDefinitionResponse> {
-    //         let uri = params.text_document_position_params.text_document.uri;
-    //         let ast = self.ast_map.get(&uri.to_string())?;
-    //         let rope = self.document_map.get(&uri.to_string())?;
+    async fn goto_definition(
+        &self,
+        params: GotoDefinitionParams,
+    ) -> Result<Option<GotoDefinitionResponse>> {
+        let definition = || -> Option<GotoDefinitionResponse> {
+            let uri = params.text_document_position_params.text_document.uri;
+            // let ast = self.ast_map.get(&uri.to_string())?;
+            // let rope = self.document_map.get(&uri.to_string())?;
 
-    //         let position = params.text_document_position_params.position;
-    //         let char = rope.try_line_to_char(position.line as usize).ok()?;
-    //         let offset = char + position.character as usize;
-    //         let span = get_definition(&ast, offset);
-    //         span.and_then(|(_, range)| {
-    //             let start_position = offset_to_position(range.start, &rope)?;
-    //             let end_position = offset_to_position(range.end, &rope)?;
+            // let position = params.text_document_position_params.position;
+            // let char = rope.try_line_to_char(position.line as usize).ok()?;
+            // let offset = char + position.character as usize;
+            // let span = get_definition(&ast, offset);
+            // span.and_then(|(_, range)| {
+            //     // let start_position = offset_to_position(range.start, &rope)?;
+            //     // let end_position = offset_to_position(range.end, &rope)?;
 
-    //             let range = Range::new(start_position, end_position);
+            //     let range = Range::new(start_position, end_position);
 
-    //             Some(GotoDefinitionResponse::Scalar(Location::new(uri, range)))
-    //         })
-    //     }();
-    //     Ok(definition)
-    // }
+            //     Some(GotoDefinitionResponse::Scalar(Location::new(uri, range)))
+            // })
+            let start_position = Position::new(0 as u32, 0 as u32);
+            let end_position = Position::new(0 as u32, 1 as u32);
+
+            let range = Range::new(start_position, end_position);
+
+            Some(GotoDefinitionResponse::Scalar(Location::new(uri, range)))
+        }();
+        Ok(definition)
+    }
     // async fn did_change_workspace_folders(&self, _: DidChangeWorkspaceFoldersParams) {
     //     self.client
     //         .log_message(MessageType::INFO, "workspace folders changed!")
