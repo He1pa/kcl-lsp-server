@@ -18,7 +18,8 @@
         "script": "watch"
       },
       "env": {
-        "SERVER_PATH": "${workspaceRoot}/target/debug/kcl-language-server"
+        // "SERVER_PATH": "${workspaceRoot}/target/debug/kcl-language-server"
+        "SERVER_PATH": "/Users/zz/code/KCLVM/kclvm/target/debug/kcl-language-server"
       }
     },
     // {

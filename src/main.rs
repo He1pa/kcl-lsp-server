@@ -9,11 +9,13 @@ use kcl_language_server::reference::get_reference;
 use kcl_language_server::semantic_token::{self, semantic_token_from_ast, LEGEND_TYPE};
 use ropey::Rope;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
+// use serde_json::Value;
 use tower_lsp::jsonrpc::{ErrorCode, Result};
 use tower_lsp::lsp_types::notification::Notification;
 use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer, LspService, Server};
+use kclvm_cli_cdylib;
+
 #[derive(Debug)]
 struct Backend {
     client: Client,
@@ -193,7 +195,7 @@ impl LanguageServer for Backend {
     }
 
     // async fn references(&self, params: ReferenceParams) -> Result<Option<Vec<Location>>> {
-    //     let reference_list = || -> Option<Vec<Location>> {
+    //     // let reference_list = || -> Option<Vec<Location>> {
     //         let uri = params.text_document_position.text_document.uri;
     //         let ast = self.ast_map.get(&uri.to_string())?;
     //         let rope = self.document_map.get(&uri.to_string())?;
